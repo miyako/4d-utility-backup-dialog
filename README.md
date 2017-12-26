@@ -162,5 +162,325 @@ Example of object notation (Form command) based dialog design
 </Preferences4D>
 ```
 
+```
+ASSERT(METHOD Get attribute(Current method path;Attribute executed on server))
+
+C_OBJECT($0;$Backup)
+$Backup:=New object
+
+$path:=Get 4D file(Backup configuration file)
+
+If (Test path name($path)=Is a document)
+	
+	C_LONGINT($intValue)
+	C_TEXT($stringValue)
+	C_BOOLEAN($boolValue)
+	
+	$dom:=DOM Parse XML source($path)
+	
+	$DataBase:=DOM Find XML element($dom;"Preferences4D/Backup/DataBase")
+	
+	If (OK=1)
+		
+		  //these paths all follow the same pattern
+		$Backup.DataBase:=New object(\
+		"DatabaseName";New object("Item";New collection);\
+		"LastBackupPath";New object("Item";New collection);\
+		"LastBackupLogPath";New object("Item";New collection);\
+		"CurrentBackupSet";New object("Item";New collection);\
+		"LastBackupDate";New object("Item";New collection);\
+		"LastBackupTime";New object("Item";New collection))
+		
+		OB GET PROPERTY NAMES($Backup.DataBase;$names)
+		
+		For ($i;1;Size of array($names))
+			$name:=$names{$i}
+			$ItemsCount:=DOM Find XML element($DataBase;"DataBase/"+$name+"/ItemsCount")
+			If (OK=1)
+				  //DataBase.{$name}.ItemsCount
+				  //DataBase.{$name}.Item[]
+				DOM GET XML ELEMENT VALUE($ItemsCount;$intValue)
+				ARRAY OBJECT($DatabaseNames;$intValue)
+				$Backup.DataBase[$name].ItemsCount:=$intValue
+				$Item:=DOM Get next sibling XML element($ItemsCount)
+				For ($j;0;$intValue-1)  //0 based index
+					DOM GET XML ELEMENT VALUE($Item;$stringValue)
+					$Backup.DataBase[$name].Item[$j]:=Choose($stringValue="";Null;$stringValue)
+					$Item:=DOM Get next sibling XML element($Item)
+				End for 
+			End if 
+		End for 
+		
+		$Backup.Settings:=New object(\
+		"Scheduler";New object(\
+		"Monthly";New object("Every";Null;"Hour";Null;"Day";Null);\
+		"Weekly";New object(\
+		"Sunday";New object("Save";Null;"Hour";Null);\
+		"Monday";New object("Save";Null;"Hour";Null);\
+		"Tuesday";New object("Save";Null;"Hour";Null);\
+		"Wednesday";New object("Save";Null;"Hour";Null);\
+		"Thursday";New object("Save";Null;"Hour";Null);\
+		"Friday";New object("Save";Null;"Hour";Null);\
+		"Saturday";New object("Save";Null;"Hour";Null));\
+		"Daily";New object("Every";Null;"Hour";Null);\
+		"Hourly";New object("Every";Null;"StartingAt";Null);\
+		"Frequency";Null);\
+		"Advanced";New object(\
+		"BackupFailure";New object(\
+		"TryBackupAtTheNextScheduledDate";Null;\
+		"TryToBackupAfter";Null;\
+		"AbortIfBackupFail";Null;\
+		"RetryCountBeforeAbort";Null);\
+		"AutomaticRestore";Null;\
+		"AutomaticLogIntegration";Null;\
+		"AutomaticRestart";Null;\
+		"BackupIfDataChange";Null;\
+		"SetNumber";New object("Enable";Null;"Value";Null);\
+		"CompressionRate";Null;\
+		"Redundancy";Null;\
+		"Interlacing";Null;\
+		"FileSegmentation";New object("DefaultSize";Null);\
+		"EraseOldBackupBefore";Null;\
+		"CheckArchiveFileDuringBackup";Null;\
+		"BackupJournalVerboseMode";Null);\
+		"General";New object("IncludeStructureFile";Null;\
+		"IncludeDataFile";Null;\
+		"IncludeAltStructFile";Null;\
+		"DestinationFolder";Null;\
+		"IncludesFiles";New object("Item";New collection)))
+		
+		$General:=DOM Find XML element($dom;"Preferences4D/Backup/Settings/General")
+		
+		If (OK=1)
+			$IncludeStructureFile:=DOM Find XML element($General;"General/IncludeStructureFile")
+			If (OK=1)
+				DOM GET XML ELEMENT VALUE($IncludeStructureFile;$boolValue)
+				$Backup.Settings.General.IncludeStructureFile:=$boolValue
+			End if 
+			$IncludeDataFile:=DOM Find XML element($General;"General/IncludeDataFile")
+			If (OK=1)
+				DOM GET XML ELEMENT VALUE($IncludeDataFile;$boolValue)
+				$Backup.Settings.General.IncludeDataFile:=$boolValue
+			End if 
+			$IncludeAltStructFile:=DOM Find XML element($General;"General/IncludeAltStructFile")
+			If (OK=1)
+				DOM GET XML ELEMENT VALUE($IncludeAltStructFile;$boolValue)
+				$Backup.Settings.General.IncludeAltStructFile:=$boolValue
+			End if 
+			$DestinationFolder:=DOM Find XML element($General;"General/DestinationFolder")
+			If (OK=1)
+				DOM GET XML ELEMENT VALUE($DestinationFolder;$stringValue)
+				$Backup.Settings.General.DestinationFolder:=Choose($stringValue="";Null;$stringValue)
+			End if 
+			$IncludesFiles:=DOM Find XML element($General;"General/IncludesFiles")
+			If (OK=1)
+				$ItemsCount:=DOM Find XML element($IncludesFiles;"IncludesFiles/ItemsCount")
+				If (OK=1)
+					DOM GET XML ELEMENT VALUE($ItemsCount;$intValue)
+					ARRAY OBJECT($DatabaseNames;$intValue)
+					$Backup.Settings.General.IncludesFiles.ItemsCount:=$intValue
+					$Item:=DOM Get next sibling XML element($ItemsCount)
+					For ($j;0;$intValue-1)  //0 based index
+						DOM GET XML ELEMENT VALUE($Item;$stringValue)
+						$Backup.Settings.General.IncludesFiles.Item[$j]:=Choose($stringValue="";Null;$stringValue)
+						$Item:=DOM Get next sibling XML element($Item)
+					End for 
+				End if 
+			End if 
+		End if 
+		
+		$Advanced:=DOM Find XML element($dom;"Preferences4D/Backup/Settings/Advanced")
+		
+		If (OK=1)
+			$BackupFailure:=DOM Find XML element($Advanced;"Advanced/BackupFailure")
+			If (OK=1)
+				$TryBackupAtTheNextScheduledDate:=DOM Find XML element($BackupFailure;"BackupFailure/TryBackupAtTheNextScheduledDate")
+				If (OK=1)
+					DOM GET XML ELEMENT VALUE($TryBackupAtTheNextScheduledDate;$boolValue)
+					$Backup.Settings.Advanced.BackupFailure.TryBackupAtTheNextScheduledDate:=$boolValue
+				End if 
+				$TryToBackupAfter:=DOM Find XML element($BackupFailure;"BackupFailure/TryToBackupAfter")
+				If (OK=1)
+					DOM GET XML ELEMENT VALUE($TryToBackupAfter;$stringValue)
+					$Backup.Settings.Advanced.BackupFailure.TryToBackupAfter:=Choose($stringValue="";Null;$stringValue)
+				End if 
+				$AbortIfBackupFail:=DOM Find XML element($BackupFailure;"BackupFailure/AbortIfBackupFail")
+				If (OK=1)
+					DOM GET XML ELEMENT VALUE($AbortIfBackupFail;$boolValue)
+					$Backup.Settings.Advanced.BackupFailure.AbortIfBackupFail:=$boolValue
+				End if 
+				$RetryCountBeforeAbort:=DOM Find XML element($BackupFailure;"BackupFailure/RetryCountBeforeAbort")
+				If (OK=1)
+					DOM GET XML ELEMENT VALUE($RetryCountBeforeAbort;$intValue)
+					$Backup.Settings.Advanced.BackupFailure.RetryCountBeforeAbort:=$intValue
+				End if 
+			End if 
+			$AutomaticRestore:=DOM Find XML element($Advanced;"Advanced/AutomaticRestore")
+			If (OK=1)
+				DOM GET XML ELEMENT VALUE($AutomaticRestore;$boolValue)
+				$Backup.Settings.Advanced.AutomaticRestore:=$boolValue
+			End if 
+			$AutomaticLogIntegration:=DOM Find XML element($Advanced;"Advanced/AutomaticLogIntegration")
+			If (OK=1)
+				DOM GET XML ELEMENT VALUE($AutomaticLogIntegration;$boolValue)
+				$Backup.Settings.Advanced.AutomaticLogIntegration:=$boolValue
+			End if 
+			$AutomaticRestart:=DOM Find XML element($Advanced;"Advanced/AutomaticRestart")
+			If (OK=1)
+				DOM GET XML ELEMENT VALUE($AutomaticRestart;$boolValue)
+				$Backup.Settings.Advanced.AutomaticRestart:=$boolValue
+			End if 
+			$BackupIfDataChange:=DOM Find XML element($Advanced;"Advanced/BackupIfDataChange")
+			If (OK=1)
+				DOM GET XML ELEMENT VALUE($BackupIfDataChange;$boolValue)
+				$Backup.Settings.Advanced.BackupIfDataChange:=$boolValue
+			End if 
+			$SetNumber:=DOM Find XML element($Advanced;"Advanced/SetNumber")
+			If (OK=1)
+				$Enable:=DOM Find XML element($SetNumber;"SetNumber/Enable")
+				If (OK=1)
+					DOM GET XML ELEMENT VALUE($Enable;$boolValue)
+					$Backup.Settings.Advanced.SetNumber.Enable:=$boolValue
+				End if 
+				$Value:=DOM Find XML element($SetNumber;"SetNumber/Value")
+				If (OK=1)
+					DOM GET XML ELEMENT VALUE($Value;$intValue)
+					$Backup.Settings.Advanced.SetNumber.Value:=$intValue
+				End if 
+			End if 
+			$CompressionRate:=DOM Find XML element($Advanced;"Advanced/CompressionRate")
+			If (OK=1)
+				DOM GET XML ELEMENT VALUE($CompressionRate;$stringValue)
+				$Backup.Settings.Advanced.CompressionRate:=Choose($stringValue="";Null;$stringValue)
+			End if 
+			$Redundancy:=DOM Find XML element($Advanced;"Advanced/Redundancy")
+			If (OK=1)
+				DOM GET XML ELEMENT VALUE($Redundancy;$stringValue)
+				$Backup.Settings.Advanced.Redundancy:=Choose($stringValue="";Null;$stringValue)
+			End if 
+			$Interlacing:=DOM Find XML element($Advanced;"Advanced/Interlacing")
+			If (OK=1)
+				DOM GET XML ELEMENT VALUE($Interlacing;$stringValue)
+				$Backup.Settings.Advanced.Interlacing:=Choose($stringValue="";Null;$stringValue)
+			End if 
+			$FileSegmentation:=DOM Find XML element($Advanced;"Advanced/FileSegmentation")
+			If (OK=1)
+				$DefaultSize:=DOM Find XML element($FileSegmentation;"FileSegmentation/DefaultSize")
+				If (OK=1)
+					DOM GET XML ELEMENT VALUE($DefaultSize;$intValue)
+					$Backup.Settings.Advanced.FileSegmentation.DefaultSize:=$intValue
+				End if 
+			End if 
+			$EraseOldBackupBefore:=DOM Find XML element($Advanced;"Advanced/EraseOldBackupBefore")
+			If (OK=1)
+				DOM GET XML ELEMENT VALUE($EraseOldBackupBefore;$boolValue)
+				$Backup.Settings.Advanced.EraseOldBackupBefore:=$boolValue
+			End if 
+			$CheckArchiveFileDuringBackup:=DOM Find XML element($Advanced;"Advanced/CheckArchiveFileDuringBackup")
+			If (OK=1)
+				DOM GET XML ELEMENT VALUE($CheckArchiveFileDuringBackup;$boolValue)
+				$Backup.Settings.Advanced.CheckArchiveFileDuringBackup:=$boolValue
+			End if 
+			$BackupJournalVerboseMode:=DOM Find XML element($Advanced;"Advanced/BackupJournalVerboseMode")
+			If (OK=1)
+				DOM GET XML ELEMENT VALUE($BackupJournalVerboseMode;$boolValue)
+				$Backup.Settings.Advanced.BackupJournalVerboseMode:=$boolValue
+			End if 
+		End if 
+		
+		$Scheduler:=DOM Find XML element($dom;"Preferences4D/Backup/Settings/Scheduler")
+		
+		If (OK=1)
+			$Frequency:=DOM Find XML element($Scheduler;"Scheduler/Frequency")
+			If (OK=1)
+				DOM GET XML ELEMENT VALUE($Frequency;$stringValue)
+				$Backup.Settings.Scheduler.Frequency:=Choose($stringValue="";Null;$stringValue)
+			End if 
+			
+			$Monthly:=DOM Find XML element($Scheduler;"Scheduler/Monthly")
+			If (OK=1)
+				$Every:=DOM Find XML element($Monthly;"Monthly/Every")
+				If (OK=1)
+					DOM GET XML ELEMENT VALUE($Every;$intValue)
+					$Backup.Settings.Scheduler.Monthly.Every:=$intValue
+				End if 
+				$Hour:=DOM Find XML element($Monthly;"Monthly/Hour")
+				If (OK=1)
+					DOM GET XML ELEMENT VALUE($Hour;$stringValue)
+					$Backup.Settings.Scheduler.Monthly.Hour:=Choose($stringValue="";Null;$stringValue)
+				End if 
+				$Day:=DOM Find XML element($Monthly;"Monthly/Day")
+				If (OK=1)
+					DOM GET XML ELEMENT VALUE($Day;$intValue)
+					$Backup.Settings.Scheduler.Monthly.Day:=$intValue
+				End if 
+			End if 
+			
+			$Weekly:=DOM Find XML element($Scheduler;"Scheduler/Weekly")
+			If (OK=1)
+				$Every:=DOM Find XML element($Weekly;"Weekly/Every")
+				If (OK=1)
+					DOM GET XML ELEMENT VALUE($Every;$intValue)
+					$Backup.Settings.Scheduler.Weekly.Every:=$intValue
+				End if 
+				
+				OB GET PROPERTY NAMES($Backup.Settings.Scheduler.Weekly;$names)
+				
+				For ($i;1;Size of array($names))
+					$name:=$names{$i}
+					$Day:=DOM Find XML element($Weekly;"Weekly/"+$name)
+					If (OK=1)
+						$Save:=DOM Find XML element($Day;$name+"/Save")
+						If (OK=1)
+							DOM GET XML ELEMENT VALUE($Save;$boolValue)
+							$Backup.Settings.Scheduler.Weekly[$name].Save:=$boolValue
+						End if 
+						$Hour:=DOM Find XML element($Day;$name+"/Hour")
+						If (OK=1)
+							DOM GET XML ELEMENT VALUE($Hour;$stringValue)
+							$Backup.Settings.Scheduler.Weekly[$name].Hour:=Choose($stringValue="";Null;$stringValue)
+						End if 
+					End if 
+				End for 
+			End if 
+			
+			$Daily:=DOM Find XML element($Scheduler;"Scheduler/Daily")
+			If (OK=1)
+				$Every:=DOM Find XML element($Daily;"Daily/Every")
+				If (OK=1)
+					DOM GET XML ELEMENT VALUE($Every;$intValue)
+					$Backup.Settings.Scheduler.Daily.Every:=$intValue
+				End if 
+				$Hour:=DOM Find XML element($Daily;"Daily/Hour")
+				If (OK=1)
+					DOM GET XML ELEMENT VALUE($Hour;$stringValue)
+					$Backup.Settings.Scheduler.Daily.Hour:=Choose($stringValue="";Null;$stringValue)
+				End if 
+			End if 
+			
+			$Hourly:=DOM Find XML element($Scheduler;"Scheduler/Hourly")
+			If (OK=1)
+				$Every:=DOM Find XML element($Hourly;"Hourly/Every")
+				If (OK=1)
+					DOM GET XML ELEMENT VALUE($Every;$intValue)
+					$Backup.Settings.Scheduler.Hourly.Every:=$intValue
+				End if 
+				$StartingAt:=DOM Find XML element($Hourly;"Hourly/StartingAt")
+				If (OK=1)
+					DOM GET XML ELEMENT VALUE($StartingAt;$stringValue)
+					$Backup.Settings.Scheduler.Hourly.StartingAt:=Choose($stringValue="";Null;$stringValue)
+				End if 
+			End if 
+			
+		End if 
+		
+	End if 
+	
+	DOM CLOSE XML($dom)
+	
+End if 
+
+$0:=$Backup
+```
 
 <img width="695" alt="2017-12-27 0 20 46" src="https://user-images.githubusercontent.com/1725068/34359610-a9aedf48-ea9c-11e7-8839-369bab65ae8c.png">
