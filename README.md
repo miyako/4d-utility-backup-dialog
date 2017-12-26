@@ -483,4 +483,6 @@ End if
 $0:=$Backup
 ```
 
-<img width="695" alt="2017-12-27 0 20 46" src="https://user-images.githubusercontent.com/1725068/34359610-a9aedf48-ea9c-11e7-8839-369bab65ae8c.png">
+### Screenshot
+
+<img width="656" alt="2017-12-27 1 05 03" src="https://user-images.githubusercontent.com/1725068/34360232-048b045a-eaa2-11e7-9514-304cf5cf1a5b.png">
