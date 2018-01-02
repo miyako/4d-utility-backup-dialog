@@ -7,6 +7,14 @@ Example of object notation (Form command) based dialog design
 
 * Possible to configure backup settings from the client side ("execute on server" method property)
 
+* Works as a component
+
+* Create a default settings file (daily at midnight) if one does not exist.
+
+### Discussion
+
+As of v16Rx, location of the [Backup configuration file](http://doc.4d.com/4Dv16R5/4D/16-R5/Get-4D-file.301-3481844.en.html) is fixed to the [Database folder](http://doc.4d.com/4Dv16R5/4D/16-R5/Get-4D-folder.301-3481820.en.html) and can not be managed elsewhere. Updating it will break the applicadtion signature on Mac.
+
 * XML to JSON converter implemented
 
 ```xml
