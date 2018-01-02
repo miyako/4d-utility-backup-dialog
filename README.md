@@ -13,7 +13,7 @@ Example of object notation (Form command) based dialog design
 
 ### Discussion
 
-As of v16Rx, location of the [Backup configuration file](http://doc.4d.com/4Dv16R5/4D/16-R5/Get-4D-file.301-3481844.en.html) is fixed to the [Database folder](http://doc.4d.com/4Dv16R5/4D/16-R5/Get-4D-folder.301-3481820.en.html) and can not be managed elsewhere. Updating it will break the applicadtion signature on Mac.
+As of v16Rx, location of the [Backup configuration file](http://doc.4d.com/4Dv16R5/4D/16-R5/Get-4D-file.301-3481844.en.html) is fixed to the [Database folder](http://doc.4d.com/4Dv16R5/4D/16-R5/Get-4D-folder.301-3481820.en.html) and can not be managed elsewhere. Updating it will break the applicadtion signature on Mac. On top of that, the default backup target (generated the first time [OPEN SETTINGS WINDOW](http://doc.4d.com/4Dv16R5/4D/16-R5/OPEN-SETTINGS-WINDOW.301-3481809.en.html) is called) is also inside the [Database folder](http://doc.4d.com/4Dv16R5/4D/16-R5/Get-4D-folder.301-3481820.en.html). This module specifies [Active 4D Folder](http://doc.4d.com/4Dv16R5/4D/16-R5/Get-4D-folder.301-3481820.en.html) which is outside the application bundle, but there is nothing that can be done about the location of the settings file itself. 
 
 * XML to JSON converter implemented
 
