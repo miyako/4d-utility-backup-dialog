@@ -3,7 +3,7 @@ Example of [object notation](http://doc.4d.com/4Dv16R5/4D/16-R5/Using-object-not
 
 ### Features
 
-**Note**: minimum 16R5 is required
+**Note**: minimum **16R5** is required
 
 * Possible to configure backup settings from the client side ("execute on server" method property)
 
