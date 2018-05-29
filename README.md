@@ -1,9 +1,9 @@
 # 4d-utility-backup-dialog
-Example of object notation (Form command) based dialog design
+Example of [object notation](http://doc.4d.com/4Dv16R5/4D/16-R5/Using-object-notation-preview.300-3482109.en.html) + [Form](http://doc.4d.com/4Dv16R5/4D/16-R5/Form.301-3514321.en.html) dialog design
 
 ### Features
 
-**Note**: [object notation](http://doc.4d.com/4Dv16R5/4D/16-R5/Using-object-notation-preview.300-3482109.en.html) is required
+**Note**: minimum **16R5** is required
 
 * Possible to configure backup settings from the client side ("execute on server" method property)
 
