@@ -1,0 +1,6 @@
+*** Full Backup
+Creating archive : Macintosh HD:Users:miyako:Documents:GitHub:4d-utility:4d-utility-backup-dialog:BACKUP.4dbase:BACKUP[0001].4BK
+Scheduled 2020/04/26 0:00
+Starting 2020/04/20 10:23
+Ending 2020/04/20 10:23
+
